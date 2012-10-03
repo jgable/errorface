@@ -21,12 +21,12 @@ describe "FileSnooper", ->
 
     it "can read CoffeeScript files", (done) ->
         filePath = process.cwd() + "/test/util/example.coffee"
-        snooper.snoopFile filePath, 8, (err, result) ->
+        snooper.snoopFile filePath, 9, (err, result) ->
             throw err if err
 
             result.lines.length.should.equal 9
-            result.lines[0].should.equal "var other = 456;"
+            result.lines[0].should.equal "other = 456;"
             result.lines[4].should.equal "blah.doesntExist();"
-            result.lines[8].should.equal ""
+            result.lines[8].should.equal "moreThings = 4;"
 
             done()        

@@ -1,6 +1,7 @@
 fs = require "fs"
 lazy = require "./Lazy"
 coffeescript = require "coffee-script"
+Stream = require "stream"
 
 class FileSnooper
     constructor: (opts = {}) ->
@@ -28,29 +29,18 @@ class FileSnooper
     _processCoffeeFile: (filePath, row, done) ->
         fs.readFile filePath, (err, contents) =>
             throw err if err
+            
             # Compile the coffee script files
             js = coffeescript.compile contents.toString()
-            
-            begin = row - @settings.preLineCount
-            begin = 0 if begin < 0
+            jsStream = new Stream
 
-            end = row + @settings.postLineCount
+            @_commonProcessJS jsStream, row, done
 
-            result = []
-            i = 0
-            console.log "Begin processing"
-            lines = new lazy().lines.map(String).forEach (line) ->
-                console.log "Process line", line
-                result.push line.trim() if begin <= i <= end
-                
-                i++
-
-            console.log "After processing"
-            lines.join () ->
-                done null, 
-                    lines: result
-
-            lines.emit('data', js)
+            # We have to fake a stream because this is just a string
+            jsStream.emit 'open'
+            jsStream.emit 'data', js
+            jsStream.emit 'end'
+            jsStream.emit 'close'
 
     _commonProcessJS: (lazyValue, row, done) ->
         begin = row - @settings.preLineCount
@@ -60,19 +50,14 @@ class FileSnooper
 
         result = []
         i = 0
-        console.log "Begin processing"
         lines = new lazy(lazyValue).lines.map(String).forEach (line) ->
-            console.log "Process line", line
             result.push line.trim() if begin <= i <= end
             
             i++
 
-        console.log "After processing"
-        lines.join () ->
+        lines.join ->
             done null, 
                 lines: result
-
-
 
 
 module.exports = FileSnooper
