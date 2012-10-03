@@ -2,7 +2,7 @@ should = require "should"
 
 describe "Project Roadmap", ->
 
-    it "should be able to parse error message from exception"
+    it "should be able to parse error message lines from exception", -> true
 
     it "should be able to load the source of the files in the stack trace for viewing"
 

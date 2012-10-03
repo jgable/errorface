@@ -1,4 +1,3 @@
-
 {init, stop} = require "./testServer"
 
 init ->
