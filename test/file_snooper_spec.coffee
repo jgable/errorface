@@ -13,9 +13,10 @@ describe "FileSnooper", ->
             throw err if err
 
             result.lines.length.should.equal 9
-            result.lines[0].should.equal "var other = 456;"
-            result.lines[4].should.equal "blah.doesntExist();"
-            result.lines[8].should.equal ""
+            result.lines[0].line.should.equal "var other = 456;"
+            result.lines[4].line.should.equal "blah.doesntExist();"
+            result.lines[4].num.should.equal 9
+            result.lines[8].line.should.equal ""
 
             done()
 
@@ -25,8 +26,19 @@ describe "FileSnooper", ->
             throw err if err
 
             result.lines.length.should.equal 9
-            result.lines[0].should.equal "other = 456;"
-            result.lines[4].should.equal "blah.doesntExist();"
-            result.lines[8].should.equal "moreThings = 4;"
+            result.lines[0].line.should.equal "  other = 456;"
+            result.lines[4].line.should.equal "  blah.doesntExist();"
+            result.lines[4].num.should.equal 10
+            result.lines[8].line.should.equal "  moreThings = 4;"
 
-            done()        
+            done()   
+
+    it "cannot read node.js core files", (done) ->
+        filePath = "events.js"
+        snooper.snoopFile filePath, 115, (err, result) ->
+            throw err if err
+
+            result.lines.length.should.equal 0
+
+            done()
+      

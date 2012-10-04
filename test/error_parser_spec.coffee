@@ -1,6 +1,7 @@
 should = require "should"
 ErrorParser = require "../lib/errorParser"
 ErrorLine = require "../lib/errorParser/errorLine"
+StackDetails = require "../lib/errorParser/stackDetails"
 
 describe "ErrorLine", ->
 
@@ -74,3 +75,45 @@ describe "ErrorParser", ->
             line.type.should.equal "file"
 
         true
+
+describe "StackDetails", ->
+    stack = null
+    lines = null
+
+    before ->
+        stack = new StackDetails
+        
+        lines = []
+        lines.push 
+            type: "description"
+            details:
+                error: "Error"
+                message: "Not Found"
+
+        lines.push
+            type: "file"
+            details:
+                file: process.cwd() + "/test/util/example.js"
+                line: 8
+                col: 0
+
+        lines.push
+            type: "file"
+            details:
+                file: process.cwd() + "/test/util/example.js"
+                line: 5
+                col: 0
+
+    it "can parse 'Not Found'", (done) ->
+
+        stack.parseLines lines, (err, results) ->
+            throw err if err
+
+            should.exist results
+
+            results.length.should.equal 2
+
+            results[0].trace.should.equal lines[1]
+            results[0].file.length.should.be.above 0
+
+            done()

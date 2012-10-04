@@ -1,6 +1,7 @@
 express = require "express"
 fs = require "fs"
 app = express()
+errorface = require "../.."
 
 init = (configureThis) ->
     app.get "/", (req, res) ->
@@ -12,9 +13,7 @@ init = (configureThis) ->
     app.get "/*", (req, res) ->
         throw new Error("Not Found")
 
-    app.use (err, req, res, next) ->
-        console.log err, err.stack, process.env
-        next err
+    app.use errorface.errorHandler
 
     configureThis?(app)
 

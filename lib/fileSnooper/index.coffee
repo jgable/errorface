@@ -22,13 +22,18 @@ class FileSnooper
     _isJSFile: (filePath) -> filePath.slice(-2) == "js"
 
     _processJSFile: (filePath, row, done) ->
-        jsFileStream = fs.createReadStream(filePath)
-        
-        @_commonProcessJS jsFileStream, row, done
+        fs.exists filePath, (exists) =>
+            unless exists
+                return done null,
+                    lines: []
+
+            jsFileStream = fs.createReadStream(filePath)
+            
+            @_commonProcessJS jsFileStream, row, done
 
     _processCoffeeFile: (filePath, row, done) ->
         fs.readFile filePath, (err, contents) =>
-            throw err if err
+            done err if err
             
             # Compile the coffee script files
             js = coffeescript.compile contents.toString()
@@ -51,7 +56,10 @@ class FileSnooper
         result = []
         i = 0
         lines = new lazy(lazyValue).lines.map(String).forEach (line) ->
-            result.push line.trim() if begin <= i <= end
+            if begin <= i <= end
+                result.push 
+                    num: i + 1
+                    line: line.replace(/\s+$/,'')
             
             i++
 

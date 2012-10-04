@@ -12,3 +12,9 @@ blah.doesntExist();
 // more fluff
 
 var endVariable = 2;
+
+var superEndVariable = 1;
+
+var superduperEnd = 2;
+
+var wayDownThere = 4;

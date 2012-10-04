@@ -4,9 +4,9 @@ describe "Project Roadmap", ->
 
     it "should be able to parse error message lines from exception", -> true
 
-    it "should be able to load the source of the files in the stack trace for viewing"
+    it "should be able to load the source of the files in the stack trace for viewing", -> true
 
-    it "should skip source of node.js core functionality"
+    it "should skip source of node.js core functionality", -> true
 
     it "should be able to work with express"
 
