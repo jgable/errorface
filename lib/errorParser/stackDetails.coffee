@@ -16,6 +16,7 @@ class StackDetails
             currLine = lines[idx]
 
             result.push 
+                level: idx
                 trace: currLine
                 file: snoopResult.lines
 
@@ -28,8 +29,9 @@ class StackDetails
 
         idx++ while lines[idx].type != "file"
 
+        currLine = lines[idx]
         if idx < max
-            @snoopFile lines[idx], handleFinishedSnoop
+            @snoopFile currLine, handleFinishedSnoop
         else
             done null, result
 

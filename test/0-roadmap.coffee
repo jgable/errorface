@@ -12,6 +12,8 @@ describe "Project Roadmap", ->
 
     it "should handle page request errors by showing a detailed error page with source information", -> true
 
-    it "should have a sexy style"
+    it "should keep it's page template in a .stache file"
+
+    it "should have a header with the path to current working directory"
 
     it "should handle ajax request errors by returning an error object with prepared HTML to be inserted into the DOM"
