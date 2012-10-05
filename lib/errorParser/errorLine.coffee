@@ -30,8 +30,8 @@ class ErrorLine
         @details = 
             method: match[1]
             file: match[2]
-            line: match[3]
-            column: match[4]
+            line: parseInt match[3], 10
+            column: parseInt match[4], 10
 
 
 module.exports = ErrorLine

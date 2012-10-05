@@ -1,5 +1,6 @@
 fs = require "fs"
 lazy = require "./Lazy"
+LineReader = require "./lineReader"
 coffeescript = require "coffee-script"
 Stream = require "stream"
 
@@ -7,8 +8,8 @@ class FileSnooper
     constructor: (opts = {}) ->
 
         @settings = 
-            preLineCount: 4
-            postLineCount: 4
+            preLineCount: 5
+            postLineCount: 5
 
         for own key, val of opts
             @settings[key] = val
@@ -27,9 +28,7 @@ class FileSnooper
                 return done null,
                     lines: []
 
-            jsFileStream = fs.createReadStream(filePath)
-            
-            @_commonProcessJS jsFileStream, row, done
+            @_commonProcessJS true, filePath, row, done
 
     _processCoffeeFile: (filePath, row, done) ->
         fs.readFile filePath, (err, contents) =>
@@ -37,35 +36,39 @@ class FileSnooper
             
             # Compile the coffee script files
             js = coffeescript.compile contents.toString()
-            jsStream = new Stream
+            
+            @_commonProcessJS false, js, row, done
 
-            @_commonProcessJS jsStream, row, done
-
-            # We have to fake a stream because this is just a string
-            jsStream.emit 'open'
-            jsStream.emit 'data', js
-            jsStream.emit 'end'
-            jsStream.emit 'close'
-
-    _commonProcessJS: (lazyValue, row, done) ->
-        begin = row - @settings.preLineCount
+    _commonProcessJS: (isFile, filePathOrContents, row, done) ->
+        # Make double sure we have an integer
+        row = parseInt row, 10
+        
+        begin = row - (@settings.preLineCount)
         begin = 0 if begin < 0
 
-        end = row + @settings.postLineCount
+        end = row + (@settings.postLineCount - 1)
 
+        count = end - begin
+        
         result = []
-        i = 0
-        lines = new lazy(lazyValue).lines.map(String).forEach (line) ->
-            if begin <= i <= end
-                result.push 
-                    num: i + 1
-                    line: line.replace(/\s+$/,'')
-            
+        i = begin
+
+        reader = new LineReader()
+        method = "readFileRange"
+        unless isFile
+            method = "readStringRange"
+
+        lineCallback = (line) ->
+            result.push 
+                num: i + 1
+                line: line.replace(/\s+$/,'')
+
             i++
 
-        lines.join ->
-            done null, 
+        reader[method] filePathOrContents, lineCallback, begin, count, ->
+            done null,
                 lines: result
 
+        true
 
 module.exports = FileSnooper

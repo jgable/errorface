@@ -64,7 +64,6 @@ util =
         parser.parseStackDetails err, done
 
     _renderErrorPage: (resp, headLine, stack, lines) ->
-        console.log "render page", headLine, stack, lines
         errorHtml = Mustache.render util.settings.errorPageTemplate, { headLine, stack, lines }
         
         resp.send errorHtml

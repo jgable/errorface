@@ -25,8 +25,8 @@ describe "ErrorLine", ->
         line.type.should.equal "file"
         line.details.method.should.equal "init"
         line.details.file.should.equal "/projects/errorface/test/util/testServer.coffee"
-        line.details.line.should.equal "13"
-        line.details.column.should.equal "18"
+        line.details.line.should.equal 13
+        line.details.column.should.equal 18
 
 describe "ErrorParser", ->
     parser = null
