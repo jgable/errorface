@@ -2,6 +2,8 @@ fs = require "fs"
 ErrorParser = require "./ErrorParser"
 Mustache = require "mustache"
 
+# TODO: I'm not crazy about how this is setup with the util, 
+# but the errorHandler is called with a different this context from express.
 util = 
     settings: 
         log: console.log
@@ -15,8 +17,7 @@ util =
         parser = new ErrorParser()
         parser.parseStackDetails err, done
 
-    _renderErrorPage: (resp, headLine, stack, lines) ->
-
+    _renderTemplateHtml: (headLine, stack, lines, done) ->
         renderTemplate = (tplString) ->
             tplData = 
                 headLine: headLine
@@ -30,23 +31,30 @@ util =
             # process the template with the passed in template function.
             errorHtml = util.settings.templateFunc tplString, tplData
 
-            resp.send errorHtml
+            done errorHtml
 
         if util.settings.errorPageTemplate
             renderTemplate util.settings.errorPageTemplate
         else
             fs.readFile util.settings.errorPageTemplatePath, (err, contents) ->
+                throw err if err
+
                 renderTemplate contents.toString()
 
+    _renderErrorPage: (resp, headLine, stack, lines) ->
+        util._renderTemplateHtml headLine, stack, lines, (html) ->
+            resp.send html
+
     _renderErrorJson: (resp, headLine, stack, lines) ->
-        errorHtml = Mustache.render util.settings.errorPageTemplate, { headLine, stack, lines }
-        
-        resp.json 
-            error: true
-            debug: errorHtml
+        util._renderTemplateHtml headLine, stack, lines, (html) ->
+
+            resp.json 
+                error: true
+                data: { headLine, stack, lines }
+                debug: html
 
 class ErrorFaceApi
-    constructor: (opts) ->
+    constructor: (opts = {}) ->
         for own key, val of opts
             util.settings[key] = val
 
@@ -61,4 +69,5 @@ class ErrorFaceApi
 
             method resp, headLine, stack, lines
 
-module.exports = ErrorFaceApi
+module.exports = 
+    errorHandler: (opts) -> return new ErrorFaceApi(opts).errorHandler

@@ -18,11 +18,12 @@ class StackDetails
             result.push 
                 level: idx
                 trace: currLine
+                focused: snoopResult.focused.trim()
                 file: snoopResult.lines
 
             idx++
-            currLine = lines[idx]
             if idx < max
+                currLine = lines[idx]
                 return @snoopFile currLine, handleFinishedSnoop
 
             done null, result

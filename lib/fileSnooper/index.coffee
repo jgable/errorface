@@ -51,6 +51,7 @@ class FileSnooper
         count = end - begin
         
         result = []
+        focused = ""
         i = begin
 
         reader = new LineReader()
@@ -59,14 +60,22 @@ class FileSnooper
             method = "readStringRange"
 
         lineCallback = (line) ->
+            num = i + 1
+            isFocus = (num == row)
+            line = line.replace(/\s+$/,'')
+
+            focused = line if isFocus
+            
             result.push 
-                num: i + 1
+                num: num
+                isFocus: (num == row)
                 line: line.replace(/\s+$/,'')
 
             i++
 
         reader[method] filePathOrContents, lineCallback, begin, count, ->
             done null,
+                focused: focused
                 lines: result
 
         true

@@ -1,6 +1,14 @@
+crypto = require "crypto"
+
 
 descriptRegex = new RegExp("^(.*): (.*)$")
 atRegex = new RegExp(".*?at (.*) \\((.*?):(.*?):(.*?)\\)")
+
+
+makeHash = (str) -> crypto.createHash("md5").update(str).digest("hex")
+
+projectPath = process.cwd()
+makeRelativePath = (path) -> path.replace(projectPath, '').replace("/node_modules", "[module]")
 
 class ErrorLine 
     constructor: (line) ->
@@ -27,9 +35,12 @@ class ErrorLine
 
     _fillForAt: (match) ->
         @type = "file"
+
         @details = 
             method: match[1]
             file: match[2]
+            fileHash: makeHash match[2]
+            fileRelative: makeRelativePath match[2]
             line: parseInt match[3], 10
             column: parseInt match[4], 10
 

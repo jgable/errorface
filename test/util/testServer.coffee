@@ -13,7 +13,7 @@ init = (configureThis) ->
     app.get "/*", (req, res) ->
         throw new Error("Not Found")
 
-    app.use errorface.errorHandler
+    app.use errorface.errorHandler()
 
     configureThis?(app)
 
