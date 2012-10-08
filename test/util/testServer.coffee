@@ -10,8 +10,7 @@ init = (configureThis) ->
     app.get "/error", (req, res, next) ->
         app.doesntExist()
 
-    app.get "/*", (req, res) ->
-        throw new Error("Not Found")
+    app.get "/*", (req, res) -> throw new Error("Not Found")
 
     app.use errorface.errorHandler()
 
