@@ -12,8 +12,12 @@ describe "Project Roadmap", ->
 
     it "should handle page request errors by showing a detailed error page with source information", -> true
 
-    it "should keep it's page template in a .stache file"
+    it "should keep its page template in a .stache file", -> true
 
-    it "should have a header with the path to current working directory"
+    it "should have a header with the path to current working directory", -> true
 
-    it "should handle ajax request errors by returning an error object with prepared HTML to be inserted into the DOM"
+    it "should show the stack with color coordinated file names for easy visual grouping", -> true
+
+    it "should let you click on a stack level and show the relevant file contents", -> true
+
+    it "should handle ajax request errors by returning an error object with prepared HTML to be inserted into the DOM", -> true
