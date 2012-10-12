@@ -1,5 +1,4 @@
 fs = require "fs"
-lazy = require "./Lazy"
 LineReader = require "./lineReader"
 coffeescript = require "coffee-script"
 Stream = require "stream"
