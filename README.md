@@ -3,6 +3,8 @@
 
 [Express](http://expressjs.com) middleware for showing detailed error information when errors happen in your app.
 
+[![Build Status](https://secure.travis-ci.org/jgable/errorface.png)](http://travis-ci.org/jgable/errorface)
+
 ## Installation
 
     npm install errorface
