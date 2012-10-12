@@ -1,7 +1,9 @@
 &#9785; errorface
 =================
 
-[Express](http://expressjs.com) middleware for showing detailed error information when errors happen in your app.
+[Express](http://expressjs.com) middleware for showing detailed error information when errors happen in your app.  
+
+Inspired by [phperror.net](http://phperror.net).
 
 [![Build Status](https://secure.travis-ci.org/jgable/errorface.png)](http://travis-ci.org/jgable/errorface)
 
