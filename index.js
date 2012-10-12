@@ -1,4 +1,4 @@
 require("coffee-script");
-api = require("./lib");
+var api = require("./lib");
 
 module.exports = api;

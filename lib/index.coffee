@@ -10,7 +10,9 @@ class ErrorFaceApi
             errorPageTemplate: null
             errorPageTemplatePath: __dirname + "/views/errorPage.stache"
             templateFunc: Mustache.render
-            preProcessTemplateData: (data) -> data
+            preProcessTemplateData: (data) -> 
+                console.log JSON.stringify(data)
+                data
 
         for own key, val of opts
             @settings[key] = val

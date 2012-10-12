@@ -1,5 +1,4 @@
 express = require "express"
-fs = require "fs"
 app = express()
 errorface = require "../.."
 
