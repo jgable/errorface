@@ -5,6 +5,10 @@
 
 [![Build Status](https://secure.travis-ci.org/jgable/errorface.png)](http://travis-ci.org/jgable/errorface)
 
+## Example
+
+Visit the [example error page](http://jgable.github.com/errorface/example.html) to see it in action.
+
 ## Installation
 
     npm install errorface
@@ -31,10 +35,6 @@
 
     # Start your app
     app.listen 3000
-
-## Example
-
-Visit the [example error page](http://jgable.github.com/errorface/example.html) to see it in action.
 
 ## Advanced Usage
 
