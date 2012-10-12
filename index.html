@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>☹ errorface by jgable</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>☹ errorface</h1>
+          <h2>Express middleware for showing detailed error information when errors happen in your app.</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/jgable/errorface/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/jgable/errorface/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/jgable/errorface" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <p>Errorface will help you get to the root of your node.js errors faster.</p>
+
+<h2>Example</h2>
+
+<p>Visit the <a href="http://jgable.github.com/errorface/example.html">example error page</a> to see it in action.</p>
+
+<h2>Installation</h2>
+
+<pre><code>npm install errorface
+</code></pre>
+
+<h2>Usage</h2>
+
+<pre><code>express = require "express"
+errorface = require "errorface"
+
+# Create your express app
+app = express()
+
+# Register your routes
+app.get "/", (req, res) -&gt;
+    res.send "Hello World"
+
+app.get "/error", (req, res, next) -&gt;
+    app.doesntExist()
+
+app.get "/*", (req, res) -&gt; throw new Error("Not Found")
+
+# Register the errorHandler middleware after your routes.
+app.use errorface.errorHandler()
+
+# Start your app
+app.listen 3000
+</code></pre>
+
+<h2>Advanced Usage</h2>
+
+<p>You can extend the middleware with a couple options, here are the defaults:</p>
+
+<pre><code># Default options
+options =
+    # Output to console.log
+    log: console.log
+    # We don't output errors to log unless you want to
+    logErrors: false
+    # We use Mustache to render templates by default
+    templateFunc: Mustache.render
+    # You can pass a string in as a template
+    errorPageTemplate: null
+    # Or, you can pass a path to a file to use as the template
+    errorPageTemplatePath: __dirname + "/views/errorPage.stache"
+    # If you want to twiddle with the data before it gets sent to the template
+    preProcessTemplateData: (data) -&gt; data
+
+# Just pass them to the errorHandler when you register with your express app
+app.use errorface.errorHandler(options)
+</code></pre>
+
+<p>Here is an example of the data that gets sent to the template</p>
+
+<pre><code>{
+   "headLine":{
+      "type":"description",
+      "details":{
+         "error":"Error",
+         "message":"Not Found"
+      }
+   },
+   "stack":[
+      {
+         "level":1,
+         "trace":{
+            "type":"file",
+            "details":{
+               "method":"init",
+               "file":"''/projects/errorface/test/util/testServer.coffee",
+               "fileHash":"2c57b3f110c76c5348e3e03296430f6b",
+               "fileRelative":"/test/util/testServer.coffee",
+               "line":18,
+               "column":13
+            }
+         },
+         "focused":"throw new Error(\"Not Found\");",
+         "file":[
+            {
+               "num":14,
+               "isFocus":false,
+               "line":"    app.get(\"/error\", function(req, res, next) {"
+            }
+         ]
+      }
+   ],
+   "lines":[
+      {
+         "type":"description",
+         "details":{
+            "error":"Error",
+            "message":"Not Found"
+         }
+      },
+      {
+         "type":"file",
+         "details":{
+            "method":"init",
+            "file":"''/projects/errorface/test/util/testServer.coffee",
+            "fileHash":"2c57b3f110c76c5348e3e03296430f6b",
+            "fileRelative":"/test/util/testServer.coffee",
+            "line":18,
+            "column":13
+         }
+      },
+      {
+         "type":"file",
+         "details":{
+            "method":"callbacks",
+            "file":"''/projects/errorface/node_modules/express/lib/router/index.js",
+            "fileHash":"ba7d97ee1f59f2aa0920257deb060e46",
+            "fileRelative":"[module]/express/lib/router/index.js",
+            "line":162,
+            "column":11
+         }
+      }
+   ],
+   "projectDirectory":"''/projects/errorface"
+}
+</code></pre>
+
+<h2>License</h2>
+
+<p>Licensed under the MIT License; no attribution required.</p>
+        </section>
+
+        <footer>
+          ☹ errorface is maintained by <a href="https://github.com/jgable">jgable</a><br>
+          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
