@@ -21,3 +21,5 @@ describe "Project Roadmap", ->
     it "should let you click on a stack level and show the relevant file contents", -> true
 
     it "should handle ajax request errors by returning an error object with prepared HTML to be inserted into the DOM", -> true
+
+    it "should allow user to short circuit showing an error page"

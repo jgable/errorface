@@ -7,6 +7,7 @@ class ErrorFaceApi
         @settings =
             log: console.log
             logErrors: false
+            showPage: true
             errorPageTemplate: null
             errorPageTemplatePath: __dirname + "/views/errorPage.stache"
             templateFunc: Mustache.render
@@ -20,6 +21,9 @@ class ErrorFaceApi
     errorHandler: ->
         
         (err, req, resp, next) =>
+            # Offer the chance to circumvent the showing of the page.
+            return next() if @settings.showPage == false || @settings.showPage?(err, req) == false
+
             @settings.log err if @settings.logErrors
             
             @_getErrStack err, (stackErr, headLine, stack, lines) =>
@@ -71,4 +75,7 @@ class ErrorFaceApi
                 debug: html
 
 module.exports = 
+    # Export our api for extending or testing
+    ErrorFaceApi: ErrorFaceApi
+    # Helper for creating an errorHandler easily.
     errorHandler: (opts) -> return new ErrorFaceApi(opts).errorHandler()
