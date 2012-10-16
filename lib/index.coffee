@@ -1,5 +1,5 @@
 fs = require "fs"
-ErrorParser = require "./ErrorParser"
+ErrorParser = require "./errorParser"
 Mustache = require "mustache"
 
 class ErrorFaceApi
