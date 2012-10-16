@@ -46,49 +46,54 @@
 
 <h2>Usage</h2>
 
-<pre><code>express = require "express"
-errorface = require "errorface"
+<pre><code>var express = require("express"),
+    errorface = require("errorface");
 
-# Create your express app
-app = express()
+var app = express();
 
-# Register your routes
-app.get "/", (req, res) -&gt;
-    res.send "Hello World"
+app.get("/", function(req, res, next) {
+    res.send("Hello World");
+});
 
-app.get "/error", (req, res, next) -&gt;
-    app.doesntExist()
+app.get("/error", function(req, res, next) {
+    app.doesntExist();
+});
 
-app.get "/*", (req, res) -&gt; throw new Error("Not Found")
+app.get("/*", function(req, res) {
+    throw new Error("Not Found");
+});
 
-# Register the errorHandler middleware after your routes.
-app.use errorface.errorHandler()
+app.use(errorface.errorHandler());
 
-# Start your app
-app.listen 3000
+app.listen(3000);
 </code></pre>
 
 <h2>Advanced Usage</h2>
 
 <p>You can extend the middleware with a couple options, here are the defaults:</p>
 
-<pre><code># Default options
-options =
-    # Output to console.log
-    log: console.log
-    # We don't output errors to log unless you want to
-    logErrors: false
-    # We use Mustache to render templates by default
-    templateFunc: Mustache.render
-    # You can pass a string in as a template
-    errorPageTemplate: null
-    # Or, you can pass a path to a file to use as the template
-    errorPageTemplatePath: __dirname + "/views/errorPage.stache"
-    # If you want to twiddle with the data before it gets sent to the template
-    preProcessTemplateData: (data) -&gt; data
+<pre><code>// Default options
+var options = {
+    // Output to console.log
+    log: console.log,
+    // We don't output errors to log unless you want to
+    logErrors: false,
+    // Pass a function (or a true/false value) to determine whether the error page should be shown
+    showPage: function(err, req) {
+        return true;
+    },
+    // We use Mustache to render templates by default
+    templateFunc: Mustache.render,
+    // You can pass a string in as a template
+    errorPageTemplate: null,
+    // Or, you can pass a path to a file to use as the template
+    errorPageTemplatePath: __dirname + "/views/errorPage.stache",
+    // If you want to twiddle with the data before it gets sent to the template
+    preProcessTemplateData: function(data) { return data; }
+};
 
-# Just pass them to the errorHandler when you register with your express app
-app.use errorface.errorHandler(options)
+// Just pass them to the errorHandler when you register with your express app
+app.use(errorface.errorHandler(options));
 </code></pre>
 
 <p>Here is an example of the data that gets sent to the template</p>
