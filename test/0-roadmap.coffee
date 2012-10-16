@@ -1,6 +1,5 @@
-should = require "should"
 
-describe "Project Roadmap", ->
+describe "errorface", ->
 
     it "should be able to parse error message lines from exception", -> true
 

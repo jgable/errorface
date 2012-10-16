@@ -17,50 +17,58 @@ Visit the [example error page](http://jgable.github.com/errorface/example.html) 
 
 ## Usage
 
-    express = require "express"
-    errorface = require "errorface"
+    var express = require("express"),
+        errorface = require("errorface");
 
-    # Create your express app
-    app = express()
+    var app = express();
 
-    # Register your routes
-    app.get "/", (req, res) ->
-        res.send "Hello World"
-    
-    app.get "/error", (req, res, next) ->
-        app.doesntExist()
-    
-    app.get "/*", (req, res) -> throw new Error("Not Found")
-    
-    # Register the errorHandler middleware after your routes.
-    app.use errorface.errorHandler()
+    app.get("/", function(req, res, next) {
+        res.send("Hello World");
+    });
 
-    # Start your app
-    app.listen 3000
+    app.get("/error", function(req, res, next) {
+        app.doesntExist();
+    });
+
+    app.get("/*", function(req, res) {
+        throw new Error("Not Found");
+    });
+
+    app.use(errorface.errorHandler());
+
+    app.listen(3000);
+
 
 ## Advanced Usage
 
 You can extend the middleware with a couple options, here are the defaults:
 
-    # Default options
-    options =
-        # Output to console.log
-        log: console.log
-        # We don't output errors to log unless you want to
-        logErrors: false
-        # We use Mustache to render templates by default
-        templateFunc: Mustache.render
-        # You can pass a string in as a template
-        errorPageTemplate: null
-        # Or, you can pass a path to a file to use as the template
-        errorPageTemplatePath: __dirname + "/views/errorPage.stache"
-        # If you want to twiddle with the data before it gets sent to the template
-        preProcessTemplateData: (data) -> data
+    // Default options
+    var options = {
+        // Output to console.log
+        log: console.log,
+        // We don't output errors to log unless you want to
+        logErrors: false,
+        // Pass a function (or a true/false value) to determine whether the error page should be shown
+        showPage: function(err, req) {
+            return true;
+        },
+        // We use Mustache to render templates by default
+        templateFunc: Mustache.render,
+        // You can pass a string in as a template
+        errorPageTemplate: null,
+        // Or, you can pass a path to a file to use as the template
+        errorPageTemplatePath: __dirname + "/views/errorPage.stache",
+        // If you want to twiddle with the data before it gets sent to the template
+        preProcessTemplateData: function(data) { return data; }
+    };
 
-    # Just pass them to the errorHandler when you register with your express app
-    app.use errorface.errorHandler(options)
+    // Just pass them to the errorHandler when you register with your express app
+    app.use(errorface.errorHandler(options));
 
-Here is an example of the data that gets sent to the template
+## Custom Templating
+
+Here is an example of the data that gets sent to the template in case you want to create your own.
 
     {
        "headLine":{
@@ -127,3 +135,7 @@ Here is an example of the data that gets sent to the template
        ],
        "projectDirectory":"''/projects/errorface"
     }
+
+## License
+
+Copyright 2012 Jacob Gable, MIT License; no attribution required.
