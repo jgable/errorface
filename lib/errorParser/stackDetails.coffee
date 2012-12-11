@@ -37,6 +37,13 @@ class StackDetails
             done null, result
 
     snoopFile: (currLine, done) ->
-        @snooper.snoopFile currLine.details.file, currLine.details.line, done
+        unless currLine.type == "?"
+            return @snooper.snoopFile currLine.details.file, currLine.details.line, done 
+
+        fakeResult = 
+            focused: ""
+            lines: []
+
+        done null, fakeResult
 
 module.exports = StackDetails

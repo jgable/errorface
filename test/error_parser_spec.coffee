@@ -28,6 +28,12 @@ describe "ErrorLine", ->
         line.details.line.should.equal 13
         line.details.column.should.equal 18
 
+    it "can parse unknown lines (------)", ->
+        line = new ErrorLine "------"
+
+        line.type.should.equal "?"
+        line.details.method.should.equal "?"
+
 describe "ErrorParser", ->
     parser = null
 
@@ -76,6 +82,37 @@ describe "ErrorParser", ->
 
         true
 
+    it "can parse error with ---- line", ->
+        err =
+            stack: """Error: Wierd MySql Error
+                at init (/projects/errorface/test/util/testServer.coffee:16:13)
+                at callbacks (/projects/errorface/node_modules/express/lib/router/index.js:162:11)
+                ------
+                at pass (/projects/errorface/node_modules/express/lib/router/index.js:143:5)
+                at Router._dispatch (/projects/errorface/node_modules/express/lib/router/index.js:170:5)
+                at Object.router (/projects/errorface/node_modules/express/lib/router/index.js:33:10)
+                at next (/projects/errorface/node_modules/express/node_modules/connect/lib/proto.js:190:15)
+                at Object.expressInit [as handle] (/projects/errorface/node_modules/express/lib/middleware.js:31:5)
+                at next (/projects/errorface/node_modules/express/node_modules/connect/lib/proto.js:190:15)
+                at Object.query [as handle] (/projects/errorface/node_modules/express/node_modules/connect/lib/middleware/query.js:44:5)"""
+
+        lines = parser.parseErrorLines err
+
+        lines.length.should.equal 11
+        lines[0].type.should.equal "description"
+        lines[0].details.message.should.equal "Wierd MySql Error"
+
+        lines[3].type.should.equal "?"
+        lines[3].details.file.should.equal "?"
+
+        lines[1].type.should.equal "file"
+        lines[2].type.should.equal "file"
+        for line in lines[4..]
+            line.type.should.equal "file"
+
+        true
+
+
 describe "StackDetails", ->
     stack = null
     lines = null
@@ -115,5 +152,37 @@ describe "StackDetails", ->
 
             results[0].trace.should.equal lines[1]
             results[0].file.length.should.be.above 0
+
+            done()
+
+    it "can parse '----' errors", (done) ->
+
+        lines.push
+            type: "?"
+            details:
+                file: "?"
+                line: "?"
+                col: "?"
+
+        lines.push
+            type: "file"
+            details:
+                file: process.cwd() + "/test/util/example.js"
+                line: 5
+                col: 0
+
+        stack.parseLines lines, (err, results) ->
+            throw err if err
+
+            should.exist results
+
+            results.length.should.equal 4
+
+            results[0].trace.should.equal lines[1]
+            results[0].file.length.should.be.above 0
+
+            results[1].trace.should.equal lines[2]
+            results[2].trace.should.equal lines[3]
+            results[2].file.length.should.equal 0
 
             done()

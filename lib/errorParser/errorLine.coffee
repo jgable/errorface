@@ -25,7 +25,7 @@ class ErrorLine
 
         return @_fillForAt match if match
 
-        throw new Error("Unable to parse error line: #{line}")
+        @_fillUnknown()
 
     _fillForDescript: (match) ->
         @type = "description"
@@ -43,6 +43,17 @@ class ErrorLine
             fileRelative: makeRelativePath match[2]
             line: parseInt match[3], 10
             column: parseInt match[4], 10
+
+    _fillUnknown: ->
+        @type = "?"
+
+        @details =
+            method: "?"
+            file: "?"
+            fileHash: "?"
+            fileRelative: "?"
+            line: "?"
+            column: "?"
 
 
 module.exports = ErrorLine
