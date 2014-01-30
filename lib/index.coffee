@@ -11,8 +11,7 @@ class ErrorFaceApi
             errorPageTemplate: null
             errorPageTemplatePath: __dirname + "/views/errorPage.stache"
             templateFunc: Mustache.render
-            preProcessTemplateData: (data) -> 
-                console.log JSON.stringify(data)
+            preProcessTemplateData: (data) ->
                 data
 
         for own key, val of opts
@@ -29,8 +28,8 @@ class ErrorFaceApi
             @_getErrStack err, (stackErr, headLine, stack, lines) =>
                 throw stackErr if stackErr
 
-                method = @_renderErrorJson
-                method = @_renderErrorPage if req.accepts 'html'
+                next(err) if not req.accepts 'html'
+                method = @_renderErrorPage
 
                 method.apply @, [resp, headLine, stack, lines]
 
