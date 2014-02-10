@@ -15,7 +15,7 @@ class ErrorLine
         @parse line
 
     parse: (line) ->
-        throw new Error("Must provide line") if not line
+        return @_fillUnknown() if not line
 
         match = descriptRegex.exec line
 
