@@ -7,11 +7,19 @@ class ErrorParser
         stack = new StackDetails
 
         lines = @parseErrorLines err
+        header = @parseHeader err
 
         stack.parseLines lines, (err, stack) ->
             done err if err
 
-            done err, lines?[0], stack, lines
+            done err, header, stack, lines
+
+    parseHeader: (err) ->
+        header = new ErrorLine()
+        details = err.stack.split("    at ")[0]
+        header.details.error = details.split("\n")[0]
+        header.details.message = details
+        return header
 
     parseErrorLines: (err) ->
         throw new Error "Stack not found" if not err.stack

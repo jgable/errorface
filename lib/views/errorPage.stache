@@ -79,7 +79,8 @@
     
 
     <section>
-        <h2><strong>{{headLine.details.error}}</strong>: {{headLine.details.message}}</h2>
+        <h2><strong>{{headLine.details.error}}</strong></h2>
+        <pre>{{headLine.details.message}}</pre>
 
         <section id="snoops">
         {{#stack}}
