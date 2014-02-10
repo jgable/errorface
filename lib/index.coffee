@@ -64,14 +64,6 @@ class ErrorFaceApi
         @_renderTemplateHtml headLine, stack, lines, (html) ->
             resp.send 500, html
 
-    _renderErrorJson: (resp, headLine, stack, lines) ->
-        @_renderTemplateHtml headLine, stack, lines, (html) ->
-
-            resp.json 
-                error: true
-                data: { headLine, stack, lines }
-                debug: html
-
 module.exports = 
     # Export our api for extending or testing
     ErrorFaceApi: ErrorFaceApi
