@@ -27,11 +27,10 @@ class ErrorFaceApi
             
             @_getErrStack err, (stackErr, headLine, stack, lines) =>
                 throw stackErr if stackErr
+                
+                return next(err) if req.accepts 'json'
 
-                method = @_renderErrorJson
-                method = @_renderErrorPage if req.accepts 'html'
-
-                method.apply @, [resp, headLine, stack, lines]
+                @_renderErrorPage resp, headLine, stack, lines
 
     _getErrStack: (err, done) ->
         parser = new ErrorParser()
@@ -63,7 +62,7 @@ class ErrorFaceApi
 
     _renderErrorPage: (resp, headLine, stack, lines) ->
         @_renderTemplateHtml headLine, stack, lines, (html) ->
-            resp.send html
+            resp.send 500, html
 
     _renderErrorJson: (resp, headLine, stack, lines) ->
         @_renderTemplateHtml headLine, stack, lines, (html) ->
