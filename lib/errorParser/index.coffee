@@ -17,8 +17,9 @@ class ErrorParser
     parseHeader: (err) ->
         header = new ErrorLine()
         details = err.stack.split("    at ")[0]
-        header.details.error = details.split("\n")[0]
-        header.details.message = details
+        lines = details.split("\n")
+        header.details.error = lines.shift()
+        header.details.message = lines.join("\n")
         return header
 
     parseErrorLines: (err) ->

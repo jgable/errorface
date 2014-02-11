@@ -20,6 +20,10 @@
 
         body > section { margin-top: -10px; }
 
+        #errorDetails {
+            margin: 0 3em 1em;
+        }
+
         #snoops {
             margin: 0 3em;
         }
@@ -80,7 +84,9 @@
 
     <section>
         <h2><strong>{{headLine.details.error}}</strong></h2>
-        <pre>{{headLine.details.message}}</pre>
+        <section id="errorDetails">
+            <pre>{{headLine.details.message}}</pre>
+        </section>
 
         <section id="snoops">
         {{#stack}}
