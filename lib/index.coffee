@@ -7,6 +7,8 @@ class ErrorFaceApi
         @settings =
             log: console.log
             logErrors: false
+            disableHtml: false
+            disableJson: false
             showPage: true
             errorPageTemplate: null
             errorPageTemplatePath: __dirname + "/views/errorPage.stache"
@@ -28,10 +30,14 @@ class ErrorFaceApi
             @_getErrStack err, (stackErr, headLine, stack, lines) =>
                 throw stackErr if stackErr
 
-                method = @_renderErrorJson
-                method = @_renderErrorPage if req.accepts 'html'
+                if not @settings.disableHtml
+                    return @_renderErrorPage resp, headLine, stack, lines if req.accepts 'html'
 
-                method.apply @, [resp, headLine, stack, lines]
+                if not @settings.disableJson
+                    return @_renderErrorJson resp, headLine, stack, lines if req.accepts 'json'
+                
+                next(err) 
+                
 
     _getErrStack: (err, done) ->
         parser = new ErrorParser()
@@ -63,12 +69,11 @@ class ErrorFaceApi
 
     _renderErrorPage: (resp, headLine, stack, lines) ->
         @_renderTemplateHtml headLine, stack, lines, (html) ->
-            resp.send html
+            resp.send 500, html
 
     _renderErrorJson: (resp, headLine, stack, lines) ->
         @_renderTemplateHtml headLine, stack, lines, (html) ->
-
-            resp.json 
+            resp.json 500,
                 error: true
                 data: { headLine, stack, lines }
                 debug: html

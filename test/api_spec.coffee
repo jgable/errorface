@@ -16,10 +16,6 @@ describe "ErrorFaceApi", ->
         errToThrow = new Error "errorface"
         
         api._getErrStack = (_, cb) -> cb()
-        
-        api._renderErrorJson = ->
-            false.should.equal true, "Should not call _renderErrorJson"
-            done()
 
         api._renderErrorPage = -> 
             done()
@@ -28,30 +24,50 @@ describe "ErrorFaceApi", ->
 
         handler errToThrow, 
             accepts: (contentDisposition) -> 
-                contentDisposition.should.equal "html"
-                true
+                contentDisposition == "html"
 
     it "renders error data if the request accepts json", (done) ->
         errToThrow = new Error "errorface"
         
         api._getErrStack = (_, cb) -> cb()
-        
+
         api._renderErrorJson = ->
             done()
-
+ 
         api._renderErrorPage = -> 
             false.should.equal true, "Should not call _renderErrorPage"
             done()
 
         handler = api.errorHandler()
 
-        handler errToThrow, 
+        fakeReq = 
             accepts: (contentDisposition) -> 
-                contentDisposition.should.equal "html"
-                false
+                contentDisposition == "json"
+
+        handler errToThrow, fakeReq, null, ->
+            done()
 
 
     it "logs errors to log function if logErrors is true", (done) ->
+        errToThrow = new Error "errorface"
+        logCount = 0
+        
+        api.settings.logErrors = true
+        api.settings.log = (msg) ->
+            logCount++
+            msg.should.equal errToThrow
+        
+        api._getErrStack = (_, cb) -> cb()
+
+        handler = api.errorHandler()
+
+        fakeReq = 
+            accepts: -> false
+
+        handler errToThrow, fakeReq, null, ->
+            done()
+
+    it "invokes next middleware if the request doesn't accepts json and html", (done) ->
         errToThrow = new Error "errorface"
         logCount = 0
         
@@ -68,14 +84,65 @@ describe "ErrorFaceApi", ->
 
         handler = api.errorHandler()
 
-        handler errToThrow, 
-            accepts: -> true
+        fakeReq = 
+            accepts: -> false
+
+        handler errToThrow, fakeReq, null, ->
+            done()
+
+    it "disables json response if disableJson is true", (done) ->
+        errToThrow = new Error "errorface"
+        
+        api.settings.disableJson = true
+        
+        api._getErrStack = (_, cb) -> cb()
+        
+        api._renderErrorJson = ->
+            false.should.equal true, "Should not call _renderErrorJson"
+            done()
+
+        api._renderErrorPage = -> 
+            false.should.equal true, "Should not call _renderErrorPage"
+            done()
+
+        handler = api.errorHandler()
+
+        fakeReq = 
+            accepts: (contentDisposition) ->
+                contentDisposition == "json"
+
+        handler errToThrow, fakeReq, null, ->
+            done()
+
+    it "disables html response if disableHtml is true", (done) ->
+        errToThrow = new Error "errorface"
+
+        api.settings.disableHtml = true
+
+        api._getErrStack = (_, cb) -> cb()
+        
+        api._renderErrorJson = ->
+            false.should.equal true, "Should not call _renderErrorJson"
+            done()
+
+        api._renderErrorPage = -> 
+            false.should.equal true, "Should not call _renderErrorPage"
+            done()
+        
+        handler = api.errorHandler()
+
+        fakeReq = 
+            accepts: (contentDisposition) ->
+                contentDisposition == "html"
+
+        handler errToThrow, fakeReq, null, ->
+            done()
 
     it "allows you to short circuit showing an error page with a function", (done) ->
         errToThrow = new Error "errorface"
         
         api._getErrStack = (_, cb) -> cb()
-        
+
         api._renderErrorJson = ->
             false.should.equal true, "Should not call _renderErrorJson"
             done()
@@ -94,8 +161,7 @@ describe "ErrorFaceApi", ->
 
         fakeReq = 
             accepts: (contentDisposition) -> 
-                contentDisposition.should.equal "html"
-                true
+                false
 
         handler errToThrow, fakeReq, null, ->
             done()
@@ -104,7 +170,7 @@ describe "ErrorFaceApi", ->
         errToThrow = new Error "errorface"
         
         api._getErrStack = (_, cb) -> cb()
-        
+
         api._renderErrorJson = ->
             false.should.equal true, "Should not call _renderErrorJson"
             done()
@@ -119,8 +185,7 @@ describe "ErrorFaceApi", ->
 
         fakeReq = 
             accepts: (contentDisposition) -> 
-                contentDisposition.should.equal "html"
-                true
+                false
 
         handler errToThrow, fakeReq, null, ->
             done()
@@ -129,6 +194,10 @@ describe "ErrorFaceApi", ->
         errToThrow = new Error "errorface"
         
         api._getErrStack = (_, cb) -> cb()
+
+        api._renderErrorJson = ->
+            false.should.equal true, "Should not call _renderErrorJson"
+            done()
         
         api._renderErrorPage = -> 
             done()
@@ -138,9 +207,7 @@ describe "ErrorFaceApi", ->
         handler = api.errorHandler()
 
         fakeReq = 
-            accepts: (contentDisposition) -> 
-                contentDisposition.should.equal "html"
-                true
+            accepts: -> true
 
         handler errToThrow, fakeReq
 
@@ -148,6 +215,10 @@ describe "ErrorFaceApi", ->
         errToThrow = new Error "errorface"
         
         api._getErrStack = (_, cb) -> cb()
+
+        api._renderErrorJson = ->
+            false.should.equal true, "Should not call _renderErrorJson"
+            done()
         
         api._renderErrorPage = -> 
             done()
@@ -157,9 +228,7 @@ describe "ErrorFaceApi", ->
         handler = api.errorHandler()
 
         fakeReq = 
-            accepts: (contentDisposition) -> 
-                contentDisposition.should.equal "html"
-                true
+            accepts: -> true
 
         handler errToThrow, fakeReq
             

@@ -49,6 +49,10 @@ You can extend the middleware with a couple options, here are the defaults:
         log: console.log,
         // We don't output errors to log unless you want to
         logErrors: false,
+        // We return html response page if requested
+        disableHtml: false,
+        // We return json response if requested
+        disableJson: false,
         // Pass a function (or a true/false value) to determine whether the error page should be shown
         showPage: function(err, req) {
             return true;

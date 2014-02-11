@@ -9,6 +9,9 @@ init = (configureThis) ->
     app.get "/error", (req, res, next) ->
         app.doesntExist()
 
+    app.get "/bigerror", (req, res, next) ->
+        throw new Error("a big error with \n several lines \n of code and \n\t > data :)")
+
     app.get "/*", (req, res) -> throw new Error("Not Found")
 
     app.use errorface.errorHandler()
