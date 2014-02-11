@@ -90,6 +90,54 @@ describe "ErrorFaceApi", ->
         handler errToThrow, fakeReq, null, ->
             done()
 
+    it "disables json response if disableJson is true", (done) ->
+        errToThrow = new Error "errorface"
+        
+        api.settings.disableJson = true
+        
+        api._getErrStack = (_, cb) -> cb()
+        
+        api._renderErrorJson = ->
+            false.should.equal true, "Should not call _renderErrorJson"
+            done()
+
+        api._renderErrorPage = -> 
+            false.should.equal true, "Should not call _renderErrorPage"
+            done()
+
+        handler = api.errorHandler()
+
+        fakeReq = 
+            accepts: (contentDisposition) ->
+                contentDisposition == "json"
+
+        handler errToThrow, fakeReq, null, ->
+            done()
+
+    it "disables html response if disableHtml is true", (done) ->
+        errToThrow = new Error "errorface"
+
+        api.settings.disableHtml = true
+
+        api._getErrStack = (_, cb) -> cb()
+        
+        api._renderErrorJson = ->
+            false.should.equal true, "Should not call _renderErrorJson"
+            done()
+
+        api._renderErrorPage = -> 
+            false.should.equal true, "Should not call _renderErrorPage"
+            done()
+        
+        handler = api.errorHandler()
+
+        fakeReq = 
+            accepts: (contentDisposition) ->
+                contentDisposition == "html"
+
+        handler errToThrow, fakeReq, null, ->
+            done()
+
     it "allows you to short circuit showing an error page with a function", (done) ->
         errToThrow = new Error "errorface"
         
