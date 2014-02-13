@@ -1,6 +1,6 @@
 {
   "name": "errorface",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Shows a styled error page while developing your app.",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,12 @@
     "development"
   ],
   "author": "Jacob Gable <jacob.gable@gmail.com>",
+  "contributors": [
+    {
+      "name": "Boris Filipov",
+      "email": "obiwonn@gmail.com"
+    }
+  ],
   "license": "MIT",
   "dependencies": {
     "coffee-script": "~1.3.3",
