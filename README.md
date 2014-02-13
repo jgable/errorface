@@ -1,4 +1,4 @@
-&#9785; errorface
+&#9786; errorface
 =================
 
 [Express](http://expressjs.com) middleware for showing detailed error information when errors happen in your app.  
