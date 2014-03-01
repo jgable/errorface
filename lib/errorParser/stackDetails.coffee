@@ -18,7 +18,7 @@ class StackDetails
             result.push 
                 level: idx
                 trace: currLine
-                focused: snoopResult.focused.trim()
+                focused: snoopResult.focused.trim() if snoopResult.focused
                 file: snoopResult.lines
 
             idx++
