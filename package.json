@@ -1,6 +1,6 @@
 {
   "name": "errorface",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Shows a styled error page while developing your app.",
   "main": "index.js",
   "scripts": {
